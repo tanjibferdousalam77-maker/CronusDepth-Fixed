@@ -19,19 +19,18 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          packages: 'tools platform-tools platforms;android-34 build-tools;34.0.0'
 
       - name: Unzip project
         run: |
           unzip -o CronusDepth_fixed_full.zip -d project
           cd project
-          # Create debug keystore
           keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US" -noprompt
 
       - name: Build Debug APK
         working-directory: project
         run: |
-          chmod +x gradlew || true
-          # Use java directly if gradlew has issues
           java -Xmx2048m -classpath gradle/wrapper/gradle-wrapper.jar org.gradle.wrapper.GradleWrapperMain assembleDebug --no-daemon
 
       - name: Upload APK
